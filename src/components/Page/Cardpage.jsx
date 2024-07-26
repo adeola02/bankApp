@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { CardBody, HomePageTop, HomeTop,HomeBottom ,Cards,Card,CardTop,CardBottom,CardBack} from "./Cards";
 import { FaRegUserCircle } from "react-icons/fa";
 import { MdOutlineSettings,MdOutlineChatBubbleOutline } from "react-icons/md";
 import card from '../../assets/images/card2.png'
 
 const CardPage = () => {
+  const [cardNumber,setCardNumber]=useState();
+
+  const handleNumber=()=>{
+    const url = `https://bank-app-z92e.onrender.com/createCardNumber`
+  }
   return (
     <CardBody>
       <HomePageTop>

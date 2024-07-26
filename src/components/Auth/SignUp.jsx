@@ -17,6 +17,7 @@ import {
   PasswordInfo,
   Savings,
   InputGender,
+  PassWordDiv,
 } from "./Auth";
 import LogoImg from "../../assets/images/logo.png";
 import { FcGoogle } from "react-icons/fc";
@@ -25,6 +26,9 @@ import hero from "../../assets/images/hero.png";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import axios from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {SyncLoader} from "react-spinners"
+
 const SignUp = () => {
   const [signUpUpdate, setSignUpUpdate] = useState(0);
   const [email, setEmail] = useState();
@@ -42,13 +46,13 @@ const SignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [gender, setGender] = useState("");
-  const [continueerror, setContinueerror] = useState(false);
+  // const [continueerror, setContinueerror] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [stateMan, setStateMan] = useState("");
   const [stateError, setStateError] = useState(false);
   const [savingsMethod, setSavingsMethod] = useState("");
   const [savingsMethodError, setSavingsMethodError] = useState(false);
-  
+  const [loading,setLoading]=useState(false)
 
   const nav = useNavigate();
 
@@ -169,32 +173,41 @@ const SignUp = () => {
   };
 
   const signCheck = () => {
-    if (!email || !fullname || !password ) {
+    if (!email || !fullname || !password) {
       console.log("required");
     } else {
+      setLoading(true)
       const url = "https://bank-app-z92e.onrender.com/signup";
-      const datas = { email, fullname, password ,address:stateMan,dob:dateOfBirth,phoneNumber,gender:gender};
+      const datas = {
+        email,
+        fullname,
+        password,
+        address: stateMan,
+        dob: dateOfBirth,
+        phoneNumber,
+        gender: gender,
+      };
       axios
         .post(url, datas)
         .then((arr) => {
           console.log(arr);
-          nav("/verify")
+          setLoading(false)
+          nav(`/verify/${arr.data.data._id}`);
         })
         .catch((err) => console.log(err));
     }
   };
 
   const handleContinue = () => {
-      if (!email) {
-        toast.error("Email is required");
-      }else if (!fullname) {
-        toast.error("Fullname is required");
-      } else if (!password) {
-        toast.error("passowrd is required");
-      }  else if(email || fullname || password) {
-        setSignUpUpdate(1);
-      }
-    
+    if (!email) {
+      toast.error("Email is required");
+    } else if (!fullname) {
+      toast.error("Fullname is required");
+    } else if (!password) {
+      toast.error("passowrd is required");
+    } else if (email || fullname || password) {
+      setSignUpUpdate(1);
+    }
   };
   return (
     <MainBody>
@@ -260,11 +273,19 @@ const SignUp = () => {
                 </InputDiv>
                 <InputDiv>
                   <Label>Password*</Label>
-                  <Input
-                    type="password"
-                    placeholder="Create a password"
-                    onChange={handlePassword}
-                  />
+                  <PassWordDiv>
+                    <Input
+                      type={showPassword ? "password" : "text"}
+                      placeholder="Create a password"
+                      onChange={handlePassword}
+                      Bg
+                    />
+                    {showPassword ? (
+                      <FaEye size={25} onClick={() => setShowPassword(false)} cursor="pointer"  />
+                    ) : (
+                      <FaEyeSlash onClick={() => setShowPassword(true)} cursor="pointer" size={25}/>
+                    )}
+                  </PassWordDiv>
                 </InputDiv>
 
                 {passwordCheck ? (
@@ -396,7 +417,12 @@ const SignUp = () => {
                 </InputDiv>
                 <InputDiv>
                   <Label>Gender*</Label>
-                  <select name="" id="" value={gender} onChange={(e)=>setGender(e.target.value)}>
+                  <select
+                    name=""
+                    id=""
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  >
                     <option value=""></option>
                     <option value="male">male</option>
                     <option value="female">female</option>
@@ -427,9 +453,9 @@ const SignUp = () => {
                 </Savings>
                 {savingsMethodError ? <p>{savingsMethodError}</p> : null}
                 <Button Bg onClick={signCheck}>
-                  Create Account
+             {loading ? <SyncLoader color="white" size={5}/>:<span>Create Account</span>}
                 </Button>
-                <button onClick={()=>setSignUpUpdate(0)}>back</button>
+                <button onClick={() => setSignUpUpdate(0)}>back</button>
                 {/* <Text>
                   Already have an account.? <span onClick={()=>nav("/Login")} >Log In</span>
                 </Text> */}

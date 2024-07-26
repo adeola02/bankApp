@@ -16,14 +16,30 @@ import {
 import { MdOutlineSettings, MdOutlineChatBubbleOutline } from "react-icons/md";
 import { FaRegUserCircle } from "react-icons/fa";
 import OtpInput from 'react-otp-input';
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Transfer = () => {
-  const [showPin, setShowPin] = useState(false);
+  const [showPin, setShowPin] = useState(0);
   const [otp, setOtp] = useState("");
+  const [fullname,setFullName] = useState("");
+  const [amount,setAmount] = useState("");
+  const [desc,setDesc]=useState("");
+  const userId=useSelector((state)=>state.bankAppStore.user._id)
+  // console.log(userId)
 
   const handleTransfer = () => {
-    console.log("my pin is", otp);
-    alert("Transaction Successful"); // Alert when transfer button is clicked
+    console.log("transferring")
+    const url =`https://bank-app-z92e.onrender.com/transfer/${userId}`
+    const data={fullname,amount,description:desc,pin:Number(otp)}
+   axios.post(url,data)
+   .then((res)=>{
+    console.log(res)
+   })
+   .catch((error)=>{
+    console.log(error)
+   })
   };
 
   return (
@@ -52,23 +68,23 @@ const Transfer = () => {
         </h3>
       </AvailableBal>
       <InputDivHolder>
-      <form action="# ">
+
 
         <InputDiv>
           <Label>Account name*</Label>
-          <Input type="text" placeholder="Account name" required />
+          <Input type="text" placeholder="Account name" required onChange={(e)=>setFullName(e.target.value)} />
         </InputDiv>
         <InputDiv>
           <Label>Amount*</Label>
-          <Input type="text" placeholder="Amount" required />
+          <Input type="number" placeholder="Amount" required onChange={(e)=>setAmount(e.target.value)}/>
         </InputDiv>
         <InputDiv>
           <Label>Description*</Label>
-          <Input type="text" placeholder="Description" required/>
+          <Input type="text" placeholder="Description" required onChange={(e)=>setDesc(e.target.value)}/>
         </InputDiv>
-        <Button onClick={() => setShowPin(true)} type="submit">Done</Button>
-      </form>
-        {showPin && (
+        <Button onClick={() => setShowPin(1)} >Done</Button>
+
+        {showPin === 1 ? (
           <PinDiv>
             <OtpInput
               value={otp}
@@ -78,13 +94,13 @@ const Transfer = () => {
               inputType="tel"
               containerStyle={{ display: "unset" }}
               inputStyle={{ width: "3.5rem ", fontSizeAdjust: "20px", height: "4rem" }}
-              renderInput={(props) => <input {...props} className='otp-input' />}
+              renderInput={(props) => <input {...props} className='otp-input' /> }
             />
             <SendDiv>
               <Button onClick={handleTransfer}>Transfer</Button>
             </SendDiv>
           </PinDiv>
-        )}
+        ) : null}
       </InputDivHolder>
     </TransferBody>
   );

@@ -123,14 +123,24 @@ justify-content: space-between;
 export const InputDiv = styled.div`
 width: 100%;
 height: max-content;
-
 `
-export const Input=styled.input`
+export const PassWordDiv=styled.div`
 width:100%;
 height: 35px;
-padding: 10px;
-border: 1px solid gray;
 border-radius: 5px;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px solid gray;
+`
+export const Input=styled.input`
+width:${({Bg})=>Bg?"90%":"100%"};
+height: 35px;
+padding: ${({Bg})=>Bg?"0px":"10px"};
+background: ${({Bg})=>Bg?"transparent":"white"};
+border: ${({Bg})=>Bg?"none": "1px solid gray"};
+border-radius: 5px;
+outline: ${({Bg})=>Bg?"none":"0.9px "};
 `
 export const Label = styled.label``
 export const Text = styled.div`

@@ -33,6 +33,9 @@ div{
     }
 }
 `
+// export const ButtonDiv=styled.div`
+// background: blue;
+// `
 export const HomeBottom=styled.div`
 width: 100%;
 height: 60%;

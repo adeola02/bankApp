@@ -18,14 +18,20 @@ import {
 import LogoImg from "../../assets/images/logo.png";
 import hero from "../../assets/images/hero.png";
 import LoadingScreen from "./LoadingScreen";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { bankUser } from "../../../feature";
+import {SyncLoader} from "react-spinners"
 
 const Login = () => {
+  const dispatch = useDispatch()
   const [email, setEmail]=useState();
   const[emailError, setEmailError]=useState();
   const [emailShowError, setEmailShowError]=useState(false);
   const [password, setPassword]=useState();
   const [showPassword, setShowPassword]=useState(true);
   const [toggle,setToggle] = useState(true);
+  const [loading,setLoading] = useState(false);
 
   const validateEmail = (input) => {
     // Regular expression for basic email validation
@@ -65,7 +71,26 @@ const handlePassword =(e)=>{
 
   const nav = useNavigate();
 
- 
+ const handleLogin=()=>{
+  if(!email || !password){
+    toast.error("all datas are required");
+  }else{
+    setLoading(true)
+    const allDatas={email,password}
+    const url ="https://bank-app-z92e.onrender.com/login";
+    axios.post(url,allDatas)
+    .then((res)=>{
+      console.log(res)
+      dispatch(bankUser(res?.data?.data))
+      setLoading(false)
+      
+     nav("/homepage")
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  }
+ }
  
   return (
   <>
@@ -114,8 +139,9 @@ const handlePassword =(e)=>{
               />
             </InputDiv>
             
-            <Button Bg onClick={() => nav("/homePage")}>
-              Login
+            <Button Bg onClick={handleLogin}>
+              {loading ? <SyncLoader color="white" size={5}/>: <span>Login</span>}
+             
             </Button>
             <Text>
               <span onClick={() => nav("/ResetPassword")}>Forget password.?</span>

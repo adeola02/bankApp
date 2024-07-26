@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   HomePageBody,
   HomePageTop,
@@ -29,36 +29,66 @@ import {
   MdElectricBolt,
   MdAtm,
   MdFlight,
-  MdOutlineSettings ,
-  MdOutlineChatBubbleOutline 
+  MdOutlineSettings,
+  MdOutlineChatBubbleOutline,
 } from "react-icons/md";
 import { GrGamepad, GrPaypal } from "react-icons/gr";
 import { PiTelevisionSimpleBold } from "react-icons/pi";
 import { SiCashapp } from "react-icons/si";
 import { AiTwotoneInsurance } from "react-icons/ai";
 import { FaRegUserCircle } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
-const HomePage = ({setShowDiv}) => {
+const HomePage = ({ setShowDiv }) => {
+  const [userData, setUserData] = useState();
+  console.log(userData);
+  // console.log(id);
+  const user = useSelector((state) => state.bankAppStore.user);
+  console.log(user);
+
+  const handleUser = () => {
+    const url = `https://bank-app-z92e.onrender.com/comingIn/${user._id}`;
+    axios
+      .post(url)
+      .then((res) => {
+        console.log(res)
+       
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(()=>{
+    handleUser();
+  },[])
+
   return (
     <HomePageBody>
       <HomePageTop>
         <HomeTop>
           <div>
-            <nav><MdOutlineSettings /></nav>
-            <nav><MdOutlineChatBubbleOutline /></nav>
-            <nav><FaRegUserCircle />
+            <nav>
+              <MdOutlineSettings />
+            </nav>
+            <nav>
+              <MdOutlineChatBubbleOutline />
+            </nav>
+            <nav>
+              <FaRegUserCircle />
             </nav>
           </div>
         </HomeTop>
         <HomeBottom>
-          <h1>Hello,Martha Igben</h1>
+          <h1>Hello,{user.fullname}</h1>
         </HomeBottom>
       </HomePageTop>
       <HomeContent>
         <Balance>
           <h3>Account balance</h3>
           <AccountBal>
-            <h1>$0.34</h1>
+            <h1>${user.accountBalance}</h1>
           </AccountBal>
           <MoneyInOut>
             <MoneyProgress>
@@ -80,7 +110,7 @@ const HomePage = ({setShowDiv}) => {
               </aside>
             </MoneyProgress>
           </MoneyInOut>
-          <Button onClick={()=>setShowDiv(4)}>transfer</Button>
+          <Button onClick={() => setShowDiv(4)}>transfer</Button>
         </Balance>
         <CardDiv>
           <h3>Credit card</h3>

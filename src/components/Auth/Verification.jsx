@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import OtpInput from 'react-otp-input';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 const Container = styled.div`
   width: 400px;
   height: 100vh;
@@ -64,6 +65,7 @@ const Button = styled.button`
 const Verification = () => {
   const [otp, setOTP] = useState('');
   const [pin, setPIN] = useState('');
+  console.log(otp)
 
   // const handleOTPChange = (index, value) => {
   //   if (!isNaN(value)) {
@@ -78,26 +80,43 @@ const nav =useNavigate();
   };
 
   const handleOtp=(e)=>{
-    setOTP(e.target.value)
-    console.log(otp)
+   const newOtp = e.target.value
+   setPIN(newOtp)
+  }
+  
+
+  const {id} = useParams();
+
+  const handleCreatePin = async () =>{
+    console.log(pin)
+      try{
+
+        const response = await axios.put(`https://bank-app-z92e.onrender.com/createPin/${id}`,{
+          pin
+        })
+        console.log("Pin Created successful",response.data)
+        nav("/")
+      }catch (error){
+        console.log("Error in Creating pin", error.data)
+      }
   }
 
   return (
     <Container>
       <h2>Create your pin</h2>
       <OTPContainer>
-      <OtpInput
+      {/* <OtpInput
           
           value={otp}
           numInputs={4}
-          onChange={setOTP}
+          onChange={handleOtp}
           renderSeparator={<span> </span>}
           inputType="tel"
           containerStyle={{display : "flex",justifyContent:"space-between",alignItems:"center"}}
           inputStyle={{ width : "3.5rem ", fontSizeAdjust : "20px",  height: "4rem"}}
           renderInput={(props) => <input {...props} className='otp-input' />}
-          />
-       
+          /> */}
+       <input type="text" value={pin} onChange={handleOtp}/>
       
       </OTPContainer>
       <PINContainer>
@@ -107,7 +126,7 @@ const nav =useNavigate();
           value={pin}
           onChange={handlePINChange}
         /> */}
-        <Button onClick={()=>nav("/")}>Create pin</Button>
+        <Button onClick={handleCreatePin}>Create pin</Button>
       </PINContainer>
     </Container>
   );

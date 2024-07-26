@@ -17,7 +17,7 @@ const App = () => {
         <Route path="/" element={<Login />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/ResetPassword" element={<ResetPassword />} />
-        <Route path="/verify" element={<Verification />} />
+        <Route path="/verify/:id" element={<Verification />} />
         <Route path="/homePage" element={<LandingPage />} />
       </Routes>
     </HashRouter>
